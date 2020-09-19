@@ -1,13 +1,27 @@
 import re
 
-lat = '472011N'
-lon = '0181744E'
+#lat = '472011N'
+#lon = '0181744E'
 
 airspaceName = 'BUDAPEST TMA1'
 line = '472011N 0181744E - 470220N 0182212E - 465337N 0190031E - 465726N 0185421E - 470324N 0184445E - 472011N 0181744E'
 topAlt = 'FL 195'
 bottomAlt = '9500 FT ALT'
-clss 'C'
+clss = 'C'
+
+def splt(string):
+    idx = 0
+    lat = []
+    lon = []
+    arr = string.split(' - ')
+    for coord in arr:
+        lat.append(coord.partition(' ')[0])
+        [d, m, sd] = dd2dms(parse(lat[idx]))
+        print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+        lon.append(coord.rpartition(' ')[2])
+        [d, m, sd] = dd2dms(parse(lon[idx]))
+        print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+        idx += 1
 
 def parse(val):
     if val[0] == "0":
@@ -25,11 +39,13 @@ def dd2dms(deg):
     sd = (md - m) * 60
     return [d, m, sd]
 
-lat = parse(lat)
-lon = parse(lon)
+splt(line)
 
-[d, m, sd] = dd2dms(lat)
-print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+#lat = parse(lat)
+#lon = parse(lon)
 
-[d, m, sd] = dd2dms(lon)
-print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+#[d, m, sd] = dd2dms(lat)
+#print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+
+#[d, m, sd] = dd2dms(lon)
+#print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
