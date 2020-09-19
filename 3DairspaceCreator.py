@@ -10,23 +10,29 @@ topAlt = 'FL 195'
 bottomAlt = '9500 FT ALT'
 clss = 'C'
 
-def splitCoordinates(string, side):
-    idx = 0
-    lat = []
-    lon = []
+class Coordinate(NamedTuple):
+    lat: int = []
+    lon: int = []
+
+class Airspace(NamedTuple):
+    name: str
+    points: Coordinate
+    clss: str
+    top: int
+    bottom: int
+
+def splitCoordinates(string):
+    coordinate = Coordinate()
     arr = string.split(' - ')
     for coord in arr:
-        lat.append(parse(coord.partition(' ')[0]))
+        coordinate.lat.append(coordStr2Num(coord.partition(' ')[0]))
         #print(str(lat[idx]) + "°")
-        lon.append(parse(coord.rpartition(' ')[2]))
+        coordinate.lon.append(coordStr2Num(coord.rpartition(' ')[2]))
         #print(str(lon[idx]) + "°")
-        idx += 1
-    if (side == "lat"):
-        return lat
-    elif (side == "lon"):
-        return lon
+    
+    return coordinate
 
-def parse(val):
+def coordStr2Num(val):
     if val[0] == "0":
         len = 3
     else:
@@ -35,34 +41,20 @@ def parse(val):
     dec = int(val[len:-1]) / 10000
     return integer + dec
 
+def altStr2Num(val):
+    if ("FL" in val):
+        return int(val.partition(' ')[2]) * 100
+    if ("FT" in val):
+        return int(val.partition(' ')[0])
+
 def dd2dms(deg):
     d = int(deg)
     md = abs(deg - d) * 60
     m = int(md)
     sd = (md - m) * 60
+    print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
     return [d, m, sd]
 
-class Coordinate(NamedTuple):
-    lat: int = []
-    lon: int = []
-
-class Airspace(NamedTuple):
-    name: str
-    points: Coordinate
-    top: int
-    bottom: int
-
 if __name__ == "__main__":
-    #tma1 = NamedTuple(airspaceName, splt(line), 19500, 9000)
-    #print(tma1)
-    coordinate = Coordinate(splt(line, "lat"), splt(line, "lon"))
-    tma1 = Airspace(airspaceName, coordinate, 19500, 9000)
-
-#lat = parse(lat)
-#lon = parse(lon)
-
-#[d, m, sd] = dd2dms(lat)
-#print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
-
-#[d, m, sd] = dd2dms(lon)
-#print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+    tma1 = Airspace(airspaceName, splitCoordinates(line), clss, altStr2Num(topAlt), altStr2Num(bottomAlt))
+    print(tma1)
