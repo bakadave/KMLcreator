@@ -9,6 +9,9 @@ topAlt = 'FL 195'
 bottomAlt = '9500 FT ALT'
 clss = 'C'
 
+if __name__ == "__main__":
+    splt(line)
+
 def splt(string):
     idx = 0
     lat = []
@@ -38,8 +41,6 @@ def dd2dms(deg):
     m = int(md)
     sd = (md - m) * 60
     return [d, m, sd]
-
-splt(line)
 
 #lat = parse(lat)
 #lon = parse(lon)
