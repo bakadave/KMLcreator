@@ -1,5 +1,6 @@
 import re
 from typing import NamedTuple
+import simplekml
 
 #lat = '472011N'
 #lon = '0181744E'
@@ -11,24 +12,36 @@ bottomAlt = '9500 FT ALT'
 clss = 'C'
 
 class Coordinate(NamedTuple):
-    lat: int = []
     lon: int = []
+    lat: int = []
 
 class Airspace(NamedTuple):
     name: str
-    points: Coordinate
-    clss: str
+    lon: int
+    lat: int
+    airspaceClass: str
     top: int
     bottom: int
+
+    def outerboundary(lat, lon):
+        bdr = '('
+        idx = 0
+        for len(lat) in lon:
+            bdr += lat[idx]
+            bdr += ','
+            bdr += lon[idx]
+            bdr += ',0'
+            bdr += ')'
+            bdr += ','
+        bdr = bdr[:-1]
+
 
 def splitCoordinates(string):
     coordinate = Coordinate()
     arr = string.split(' - ')
     for coord in arr:
         coordinate.lat.append(coordStr2Num(coord.partition(' ')[0]))
-        #print(str(lat[idx]) + "°")
         coordinate.lon.append(coordStr2Num(coord.rpartition(' ')[2]))
-        #print(str(lon[idx]) + "°")
     
     return coordinate
 
@@ -56,5 +69,9 @@ def dd2dms(deg):
     return [d, m, sd]
 
 if __name__ == "__main__":
-    tma1 = Airspace(airspaceName, splitCoordinates(line), clss, altStr2Num(topAlt), altStr2Num(bottomAlt))
-    print(tma1)
+    kml = simplekml.Kml()
+    tma1 = Airspace(airspaceName, splitCoordinates(line).lat, splitCoordinates(line).lon, clss, altStr2Num(topAlt), altStr2Num(bottomAlt))
+    #kml.newpoint(name=tma1.name, coords=[(tma1.lon[0], tma1.lat[0])])
+    #kml.newpolygon(name=tma1.name, outerboundaryis=[(tma1.lon, tma1.lat)])
+    #kml.save("test.kml")
+    print(tma1.outerboundary)
