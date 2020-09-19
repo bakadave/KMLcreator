@@ -1,4 +1,5 @@
 import re
+from typing import NamedTuple
 
 #lat = '472011N'
 #lon = '0181744E'
@@ -9,22 +10,21 @@ topAlt = 'FL 195'
 bottomAlt = '9500 FT ALT'
 clss = 'C'
 
-if __name__ == "__main__":
-    splt(line)
-
-def splt(string):
+def splitCoordinates(string, side):
     idx = 0
     lat = []
     lon = []
     arr = string.split(' - ')
     for coord in arr:
-        lat.append(coord.partition(' ')[0])
-        [d, m, sd] = dd2dms(parse(lat[idx]))
-        print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
-        lon.append(coord.rpartition(' ')[2])
-        [d, m, sd] = dd2dms(parse(lon[idx]))
-        print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
+        lat.append(parse(coord.partition(' ')[0]))
+        #print(str(lat[idx]) + "°")
+        lon.append(parse(coord.rpartition(' ')[2]))
+        #print(str(lon[idx]) + "°")
         idx += 1
+    if (side == "lat"):
+        return lat
+    elif (side == "lon"):
+        return lon
 
 def parse(val):
     if val[0] == "0":
@@ -41,6 +41,22 @@ def dd2dms(deg):
     m = int(md)
     sd = (md - m) * 60
     return [d, m, sd]
+
+class Coordinate(NamedTuple):
+    lat: int = []
+    lon: int = []
+
+class Airspace(NamedTuple):
+    name: str
+    points: Coordinate
+    top: int
+    bottom: int
+
+if __name__ == "__main__":
+    #tma1 = NamedTuple(airspaceName, splt(line), 19500, 9000)
+    #print(tma1)
+    coordinate = Coordinate(splt(line, "lat"), splt(line, "lon"))
+    tma1 = Airspace(airspaceName, coordinate, 19500, 9000)
 
 #lat = parse(lat)
 #lon = parse(lon)
