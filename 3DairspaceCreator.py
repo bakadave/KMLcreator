@@ -1,61 +1,56 @@
 import re
-from typing import NamedTuple
-import simplekml
+from simplekml import *
 
 #lat = '472011N'
 #lon = '0181744E'
 
-airspaceName = 'BUDAPEST TMA4'
-line = '474111N 0185850E - 473556N 0185145E - 473355N 0185502E - 473057N 0185951E - 473721N 0190503E - 473827N 0190316E - 474111N 0185850E'
+airspaceName = 'BUDAPEST TMA1'
+line = '472011N 0181744E - 470220N 0182212E - 465337N 0190031E - 465726N 0185421E - 470324N 0184445E - 472011N 0181744E'
 topAlt = 'FL 195'
-bottomAlt = '2500 FT ALT'
+bottomAlt = '9500 FT ALT'
 clss = 'C'
-
-class Coordinate(NamedTuple):
-    lon: int = []
-    lat: int = []
 
 class Airspace:
     name: str
-    lon: int
-    lat: int
+    points = ()
     airspaceClass: str
-    top: int
-    bottom: int
+    ceiling: int
+    floor: int
     numPoints: int
 
-    def __init__(self, name, gps, airspaceClass, top, bottom):
+    def __init__(self, name, gps, clss, top, bottom):
         self.name = name
-        self.lat = gps.lat
-        self.lon = gps.lon
-        self.clss = airspaceClass
-        self.bottom = bottom
-        self.top = top
-        self.numPoints = len(self.lon)
+        self.points = gps
+        self.airspaceClass = clss
+        self.floor = bottom
+        self.ceiling = top
+        self.numPoints = len(self.points)
 
-    def outerboundary(self):
-        bdr = '['
-        for idx in range(self.numPoints):
-            bdr += '('
-            bdr += str(self.lon[idx])
-            bdr += ','
-            bdr += str(self.lat[idx])
-            bdr += ',0'
-            bdr += ')'
-            bdr += ','
-        bdr = bdr[:-1]
-        bdr += ']'
-        return bdr
+    def lowerBoundary(self):
+        arr = []
+        for x in range(self.numPoints):
+            l = list(self.points[x])
+            l.append(self.floor)
+            arr.append(tuple(l))
+        return arr
 
+    def upperBoundary(self):
+        arr = []
+        for x in range(self.numPoints):
+            l = list(self.points[x])
+            l.append(self.ceiling)
+            arr.append(tuple(l))
+        return arr
 
+#creates a list of tuples from the coordinates
 def splitCoordinates(string):
-    coordinate = Coordinate()
+    lst = []
     arr = string.split(' - ')
     for coord in arr:
-        coordinate.lat.append(coordStr2Num(coord.partition(' ')[0]))
-        coordinate.lon.append(coordStr2Num(coord.rpartition(' ')[2]))
+        crd = (coordStr2Num(coord.partition(' ')[2]), coordStr2Num(coord.rpartition(' ')[0]))   #(lon,lat)
+        lst.append(crd)
     
-    return coordinate
+    return lst
 
 def coordStr2Num(val):
     if val[0] == "0":
@@ -80,11 +75,18 @@ def dd2dms(deg):
     print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
     return [d, m, sd]
 
-if __name__ == "__main__":
-    kml = simplekml.Kml()
+if __name__ == "__main__":    
+    kml = Kml(name="test")
+    kml.document = Folder(name="Budapest TMA", open = 1)
     tma1 = Airspace(airspaceName, splitCoordinates(line), clss, altStr2Num(topAlt), altStr2Num(bottomAlt))
-    #kml.newpoint(name=tma1.name, coords=[(tma1.lon[0], tma1.lat[0])])
-    print(tma1.outerboundary())
+
+    tma_1C = kml.newpolygon(name=tma1.name, outerboundaryis=tma1.lowerBoundary())
+    tma_1C.polystyle.color = '990000ff'
+    tma_1C.altitudemode = AltitudeMode.absolute
+
+    tma_1F = kml.newpolygon(name=tma1.name, outerboundaryis=tma1.upperBoundary())
+    tma_1F.polystyle.color = '990000ff'
+    tma_1F.altitudemode = AltitudeMode.absolute
+
+    kml.save("test.kml")
     
-    #kml.newpolygon(name=tma1.name, outerboundaryis=[(18.585,47.4111,0),(18.514499999999998,47.3556,0),(18.5502,47.3355,0),(18.5951,47.3057,0),(19.0503,47.3721,0),(19.0316,47.3827,0),(18.585,47.4111,0)])
-    #kml.save("test.kml")
