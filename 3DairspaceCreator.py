@@ -47,12 +47,16 @@ def splitCoordinates(string):
     lst = []
     arr = string.split(' - ')
     for coord in arr:
-        crd = (coordStr2Num(coord.partition(' ')[2]), coordStr2Num(coord.rpartition(' ')[0]))   #(lon,lat)
+        lat = coordStr2dms(coord.rpartition(' ')[0])
+        lon = coordStr2dms(coord.partition(' ')[2])
+        lon = dms2dd(lon)
+        lat = dms2dd(lat)
+        crd = (lon, lat)
         lst.append(crd)
     
     return lst
 
-def coordStr2Num(val):
+def coordStr2dd(val):
     if val[0] == "0":
         len = 3
     else:
@@ -60,6 +64,16 @@ def coordStr2Num(val):
     integer = int(val[:len])
     dec = int(val[len:-1]) / 10000
     return integer + dec
+
+def coordStr2dms(val):
+    if val[0] == "0":
+        len = 3
+    else:
+        len = 2
+    d = int(val[:len])
+    m = int(val[len:len+2])
+    s = int(val[len+2:-1])
+    return [d,m,s]
 
 def altStr2Num(val):
     if ("FL" in val):
@@ -72,8 +86,15 @@ def dd2dms(deg):
     md = abs(deg - d) * 60
     m = int(md)
     sd = (md - m) * 60
-    print(str(d) + "°" + str(m) + "'" + str(round(sd,4)) + "\"")
     return [d, m, sd]
+
+def printDMS(deg):
+    print(str(deg[0]) + "°" + str(deg[1]) + "'" + str(round(deg[2],4)) + "\"")
+
+def dms2dd(deg):
+    dd = float(deg[0]) + float(deg[1])/60 + float(deg[2]) / (60*60)
+    dd = round(dd,5)
+    return dd
 
 if __name__ == "__main__":    
     kml = Kml(name="test")
