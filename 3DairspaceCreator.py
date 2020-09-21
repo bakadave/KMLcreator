@@ -7,11 +7,17 @@ topAlt_1 = 'FL 195'
 bottomAlt_1 = '9500 FT ALT'
 clss_1 = 'C'
 
-airspaceName_2 = 'BUDAPEST TMA2/B'
-line_2 = '471342N 0185839E - 470324N 0184445E - 465726N 0185421E - 465337N 0190031E - 464819N 0192349E - 465248N 0195136E - 470913N 0201353E - 471529N 0201355E - 473200N 0201358E - 474052N 0195940E - 474906N 0194628E - 473835N 0193214E - 471927N 0200302E - 465441N 0192934E - 470345N 0191451E - 471342N 0185839E'
-topAlt_2 = 'FL 195'
-bottomAlt_2 = '5500 FT ALT'
-clss_2 = 'C'
+airspaceName_2a = 'BUDAPEST TMA2/A'
+line_2a = '474419N 0181530E - 472900N 0181531E - 472421N 0181642E - 472232N 0181709E - 472011N 0181744E - 470324N 0184445E - 471342N 0185839E - 471844N 0185029E - 472115N 0184623E - 472409N 0184140E - 472531N 0183928E - 473231N 0183928E - 473653N 0183928E - 474919N 0185613E - 474914N 0190432E - 474907N 0191518E - 473849N 0193152E - 473835N 0193214E - 474906N 0194628E - 475644N 0193408E - 480519N 0192017E along border HUNGARY_SLOVAKREPUBLIC - 474419N 0181530E'
+topAlt_2a = 'FL 195'
+bottomAlt_2a = '5500 FT ALT'
+clss_2a = 'C'
+
+airspaceName_2b = 'BUDAPEST TMA2/B'
+line_2b = '471342N 0185839E - 470324N 0184445E - 465726N 0185421E - 465337N 0190031E - 464819N 0192349E - 465248N 0195136E - 470913N 0201353E - 471529N 0201355E - 473200N 0201358E - 474052N 0195940E - 474906N 0194628E - 473835N 0193214E - 471927N 0200302E - 465441N 0192934E - 470345N 0191451E - 471342N 0185839E'
+topAlt_2b = 'FL 195'
+bottomAlt_2b = '5500 FT ALT'
+clss_2b = 'C'
 
 airspaceName_3 = 'BUDAPEST TMA3'
 line_3 = '474919N 0185613E - 473653N 0183928E - 473231N 0183928E - 472531N 0183928E - 472409N 0184140E - 472115N 0184623E - 471844N 0185029E - 471342N 0185839E - 471956N 0190704E - 472418N 0190115E - 472525N 0185940E - 472811N 0190029E - 472933N 0190054E - 473057N 0185951E - 473355N 0185502E - 473556N 0185145E - 474111N 0185850E - 473827N 0190316E - 473721N 0190503E - 473640N 0190610E - 473600N 0191030E - 473439N 0192008E - 473221N 0192350E - 473835N 0193214E - 473849N 0193152E - 474907N 0191518E - 474914N 0190432E - 474919N 0185613E'
@@ -25,6 +31,12 @@ topAlt_4 = 'FL 195'
 bottomAlt_4 = '2500 FT ALT'
 clss_4 = 'C'
 
+airspaceName_5 = 'BUDAPEST CTR'
+line_5 = '473546N 0190523E - 473457N 0190856E - 473230N 0191930E - 472400N 0193400E - 472307N 0193247E - 471632N 0192347E - 471457N 0192138E - 472410N 0190642E - 472613N 0190619E - 472941N 0190336E - 473022N 0190325E - 473038N 0190321E - 473546N 0190523E'
+topAlt_5 = '3500 FT ALT'
+bottomAlt_5 = 'GND'
+clss_5 = 'D'
+
 class Airspace:
     name: str
     points = ()
@@ -34,7 +46,8 @@ class Airspace:
     numPoints: int
     color: str
     colorDict = {
-        'C' : '990000ff'
+        'C' : '990000ff',
+        'D' : 'BEB222ff'
     }
 
     def __init__(self, name, gps, clss, top, bottom):
@@ -120,8 +133,8 @@ def coordStr2dms(val):
     else:
         len = 2
     d = int(val[:len])
-    m = int(val[len:len+2])
-    s = int(val[len+2:-1])
+    m = int(val[len:len + 2])
+    s = int(val[len + 2:len + 4])
     return [d,m,s]
 
 def altStr2Num(val):
@@ -129,6 +142,8 @@ def altStr2Num(val):
         return int(val.partition(' ')[2]) * 100
     if ("FT" in val):
         return int(val.partition(' ')[0])
+    if ("GND" in val):
+        return int(0)
 
 def dd2dms(deg):
     d = int(deg)
@@ -147,18 +162,21 @@ def dms2dd(deg):
 
 if __name__ == "__main__":    
     tma1 = Airspace(airspaceName_1, splitCoordinates(line_1), clss_1, altStr2Num(topAlt_1), altStr2Num(bottomAlt_1))
-    tma2b = Airspace(airspaceName_2, splitCoordinates(line_2), clss_2, altStr2Num(topAlt_2), altStr2Num(bottomAlt_2))
+    tma2a = Airspace(airspaceName_2a, splitCoordinates(line_2a), clss_2a, altStr2Num(topAlt_2a), altStr2Num(bottomAlt_2a))
+    tma2b = Airspace(airspaceName_2b, splitCoordinates(line_2b), clss_2b, altStr2Num(topAlt_2b), altStr2Num(bottomAlt_2b))
     tma3 = Airspace(airspaceName_3, splitCoordinates(line_3), clss_3, altStr2Num(topAlt_3), altStr2Num(bottomAlt_3))
     tma4 = Airspace(airspaceName_4, splitCoordinates(line_4), clss_4, altStr2Num(topAlt_4), altStr2Num(bottomAlt_4))
-
+    ctr = Airspace(airspaceName_5, splitCoordinates(line_5), clss_5, altStr2Num(topAlt_5), altStr2Num(bottomAlt_5))
 
     kml = Kml(name="test")
     kml.document = Folder(name="Budapest TMA", open = 1)
 
     tma1.generatePoly()
+    tma2a.generatePoly()
     tma2b.generatePoly()
     tma3.generatePoly()
     tma4.generatePoly()
+    ctr.generatePoly()
 
     kml.save("test.kml")
     
