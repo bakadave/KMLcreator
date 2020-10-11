@@ -5,6 +5,10 @@ from helperFunctions import isClockWise
 
 borderPath = "imported maps/HUNborder.txt"
 eps = 0.025
+# epsilon rule of thumb
+# 0.1   -> 30 points
+# 0.05  -> 68 points
+# 0.025 -> 144 points
 
 
 def parseXML():
@@ -28,7 +32,7 @@ def reducePoly(polygon):
     mask = rdp(polygon, algo="iter", return_mask = True, epsilon = eps)
     #print(mask[0:10])
 
-    for idx, item in enumerate(polygon):
+    for idx, _ in enumerate(polygon):
         if mask[idx]:
             result.append(polygon[idx])
 
@@ -51,6 +55,6 @@ if __name__ == "__main__":
     if not isClockWise(poly_red):
         poly_red.reverse()
 
-    Write2file(poly_red)
+    #Write2file(poly_red)
 
-    createBorderKML()
+    #createBorderKML()

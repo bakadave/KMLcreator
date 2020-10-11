@@ -1,5 +1,5 @@
 import re
-from helperFunctions import *
+from helperFunctions import splitCoordinates, altStr2Num
 from simplekml import Kml, Folder, AltitudeMode
 from pnt2line import distance
 
