@@ -2,7 +2,7 @@ from math import sin, cos, sqrt, atan2, radians
 from pnt2line import pnt2line
 import sys
 
-borderPath = "imported maps/HUNborder.txt"
+borderPath = "maps/HUNborder.txt"
 border = []
 
 #creates a list of tuples from the coordinates

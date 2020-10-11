@@ -3,13 +3,12 @@ from xml.dom import minidom
 from simplekml import Kml
 from helperFunctions import isClockWise
 
-borderPath = "imported maps/HUNborder.txt"
-eps = 0.025
-# epsilon rule of thumb
+borderPath = "maps/HUNborder.txt"
+# epsilon values:
 # 0.1   -> 30 points
 # 0.05  -> 68 points
 # 0.025 -> 144 points
-
+eps = 0.025
 
 def parseXML():
     xmldoc = minidom.parse('imported maps/HUN_border_HIres.kml')
@@ -30,7 +29,6 @@ def parseXML():
 def reducePoly(polygon):
     result = []
     mask = rdp(polygon, algo="iter", return_mask = True, epsilon = eps)
-    #print(mask[0:10])
 
     for idx, _ in enumerate(polygon):
         if mask[idx]:
@@ -43,10 +41,10 @@ def Write2file(lst):
     open(borderPath, 'w').write('\n'.join('%s %s' % x for x in lst))
 
 def createBorderKML():
-    kml = Kml(name="rdp")
-    border = kml.newpolygon(name="RDP_border", outerboundaryis=poly_red)
+    kml = Kml(name="Hungary")
+    border = kml.newpolygon(name="Hungarian border", outerboundaryis=poly_red)
     border.polystyle.color = '00000f0f'
-    kml.save("rdp.kml")
+    kml.save("maps/border.kml")
 
 if __name__ == "__main__":
     poly = parseXML()
@@ -56,5 +54,4 @@ if __name__ == "__main__":
         poly_red.reverse()
 
     #Write2file(poly_red)
-
     #createBorderKML()
