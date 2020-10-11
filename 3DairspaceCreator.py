@@ -1,6 +1,7 @@
 import re
 from helperFunctions import *
 from simplekml import Kml, Folder, AltitudeMode
+from pnt2line import distance
 
 airspaceName_1 = 'BUDAPEST TMA2/A'
 line_1 = '474419N 0181530E - 472900N 0181531E - 472421N 0181642E - 472232N 0181709E - 472011N 0181744E - 470324N 0184445E - 471342N 0185839E - 471844N 0185029E - 472115N 0184623E - 472409N 0184140E - 472531N 0183928E - 473231N 0183928E - 473653N 0183928E - 474919N 0185613E - 474914N 0190432E - 474907N 0191518E - 473849N 0193152E - 473835N 0193214E - 474906N 0194628E - 475644N 0193408E - 480519N 0192017E along border HUNGARY_SLOVAKREPUBLIC - 474419N 0181530E'
@@ -32,8 +33,8 @@ class Airspace:
 
     def generatePoly(self):
         self.upperBoundary()
-        #self.lowerBoundary()
-        #self.sides()
+        self.lowerBoundary()
+        self.sides()
 
     def lowerBoundary(self):
         arr = []
@@ -86,4 +87,3 @@ if __name__ == "__main__":
     tma1.generatePoly()
 
     kml.save("test.kml")
-    

@@ -4,7 +4,7 @@ from simplekml import Kml
 from helperFunctions import isClockWise
 
 borderPath = "imported maps/HUNborder.txt"
-eps = 0.05
+eps = 0.025
 
 
 def parseXML():
@@ -48,11 +48,9 @@ if __name__ == "__main__":
     poly = parseXML()
     poly_red = reducePoly(poly)
 
-    print(isClockWise(poly_red))
     if not isClockWise(poly_red):
         poly_red.reverse()
-    print(isClockWise(poly_red))
 
-    #Write2file(poly_red)
+    Write2file(poly_red)
 
-    #createBorderKML()
+    createBorderKML()
