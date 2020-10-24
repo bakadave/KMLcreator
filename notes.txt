@@ -1,6 +1,0 @@
-https://mygeodata.cloud/converter/kmz-to-kml.Python+Tutorial+Read+data+from+text+file+and+split+into+multiple+filesIn
-
-AIP:
--ENR 2.1: FIR, TMA, CTA, UIR
--ENR 2.2: other regulated
--ENR 5.5: glider airspaces
