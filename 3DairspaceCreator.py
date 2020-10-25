@@ -32,38 +32,38 @@ class Airspace:
         self.numPoints = len(self.points)
         self.color = self.colorDict[self.airspaceClass]
 
-    def generatePoly(self):
-        self.upperBoundary()
-        self.lowerBoundary()
-        self.sides()
+    def generatePoly(self, doc):
+        self.upperBoundary(doc)
+        self.lowerBoundary(doc)
+        self.sides(doc)
 
-    def lowerBoundary(self):
+    def lowerBoundary(self, doc):
         arr = []
         for x in range(self.numPoints):
             l = list(self.points[x])
             l.append(self.floor)
             arr.append(tuple(l))
         
-        floorPoly = kml.newpolygon(name=self.name, outerboundaryis=arr)
+        floorPoly = doc.newpolygon(name=self.name, outerboundaryis=arr)
         floorPoly.polystyle.color = self.color
         floorPoly.altitudemode = AltitudeMode.absolute
         
         return
 
-    def upperBoundary(self):
+    def upperBoundary(self, doc):
         arr = []
         for x in range(self.numPoints):
             l = list(self.points[x])
             l.append(self.ceiling)
             arr.append(tuple(l))
 
-        ceilingPoly = kml.newpolygon(name=self.name, outerboundaryis=arr)
+        ceilingPoly = doc.newpolygon(name=self.name, outerboundaryis=arr)
         ceilingPoly.polystyle.color = self.color
         ceilingPoly.altitudemode = AltitudeMode.absolute
 
         return
 
-    def sides(self):
+    def sides(self, doc):
         for x in range(self.numPoints - 1):
             p1 = list(self.points[x])
             p1.append(self.ceiling)
@@ -73,7 +73,7 @@ class Airspace:
             p3.append(self.floor)
             p4 = list(self.points[x + 1])
             p4.append(self.ceiling)
-            sides = kml.newpolygon(name=self.name, outerboundaryis=[tuple(p1), tuple(p2), tuple(p3), tuple(p4)])
+            sides = doc.newpolygon(name=self.name, outerboundaryis=[tuple(p1), tuple(p2), tuple(p3), tuple(p4)])
             sides.polystyle.color = self.color
             sides.altitudemode = AltitudeMode.absolute
 
@@ -89,8 +89,8 @@ if __name__ == "__main__":
 
     for tma in TMA:
         box = Airspace(tma[0], splitCoordinates(tma[1]), altStr2Num(tma[2]), altStr2Num(tma[3]), tma[4])
-        #kml.document = Folder(name=box.name, open = False)
-        box.generatePoly()
+        fld = kml.newfolder(name=box.name, open = False)
+        box.generatePoly(fld)
         print(box.name + " polygon generated")
 
     kml.save("test.kml")
