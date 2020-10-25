@@ -5,6 +5,9 @@ import sys
 borderPath = "maps/HUNborder.txt"
 border = []
 
+def ft2m (feet):
+    return feet * 0.3048
+
 #creates a list of tuples from the coordinates
 def splitCoordinates(string):
     alongBorder = False
@@ -61,6 +64,11 @@ def handleBorder(firstP, lastP, lst):
     #find the ideal position to insert lastP
     if pnt2line(lastP,border[idx2 - 1], border[idx2]) > pnt2line(firstP,border[idx2], border[idx2 + 1]):
         idx2 += 1
+    
+
+    # handle exception: it is posible that no point needs to be inserted
+    if (idx1 == idx2):
+        return
 
     idx = min(idx1, idx2)
     while idx != (max(idx1, idx2) + 1):
@@ -165,3 +173,7 @@ def isClockWise(lst):
         return False
     else:
         return False
+
+
+if __name__ == "__main__":
+    splitCoordinates("474541N 0183928E along border HUNGARY_SLOVAKREPUBLIC - 474548N 0182806E - 472827N 0182806E - 472956N 0183216E - 473231N 0183928E - 474541N 0183928E")
