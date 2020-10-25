@@ -9,14 +9,12 @@ with open(url) as fp:
 
 ENR2_1 = [a.get_text() for a in soup.find_all('table')[3]]
 
-#https://regexr.com/ -> for much needed help
-#x = re.split(r"(BUDAPEST TMA\d?\/\w?|BUDAPEST TMA\d?)", TMA)
 TMA = ENR2_1[1].split("BUDAPEST TMA")
 TMA.pop(0)
 
 for idx, _ in enumerate(TMA):
     TMA[idx] = "BUDAPEST TMA" + TMA[idx]
 
-TMAs = []
-for row in TMA:
-    print(row)
+tma1 = re.split(r"(BUDAPEST TMA\d?\/\w?|BUDAPEST TMA\d?)|(FL\s\d\d\d)|([0-9]{1,4}\sFT\sALT)", TMA[1])
+tma1 = list(filter(None, tma1))
+print(tma1[3])
