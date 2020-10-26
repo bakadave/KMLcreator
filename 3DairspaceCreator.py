@@ -4,11 +4,11 @@ from simplekml import Kml, Folder, AltitudeMode
 from pnt2line import distance
 from AIPparser import parseTMA, parseLHSG
 
-airspaceName_1 = 'BUDAPEST TMA2/A'
-line_1 = '474419N 0181530E - 472900N 0181531E - 472421N 0181642E - 472232N 0181709E - 472011N 0181744E - 470324N 0184445E - 471342N 0185839E - 471844N 0185029E - 472115N 0184623E - 472409N 0184140E - 472531N 0183928E - 473231N 0183928E - 473653N 0183928E - 474919N 0185613E - 474914N 0190432E - 474907N 0191518E - 473849N 0193152E - 473835N 0193214E - 474906N 0194628E - 475644N 0193408E - 480519N 0192017E along border HUNGARY_SLOVAKREPUBLIC - 474419N 0181530E'
-topAlt_1 = 'FL 195'
-bottomAlt_1 = '5500 FT ALT'
-clss_1 = 'C'
+airspaceName_1 = 'BUDAPEST CTR'
+line_1 = '473546N 0190523E - 473457N 0190856E - 473230N 0191930E - 472400N 0193400E - 472307N 0193247E - 471632N 0192347E - 471457N 0192138E - 472410N 0190642E - 472613N 0190619E - 472941N 0190336E - 473022N 0190325E - 473038N 0190321E - 473546N 0190523E'
+topAlt_1 = '3500 FT ALT'
+bottomAlt_1 = 'GND'
+clss_1 = 'D'
 
 class Airspace:
     name: str
@@ -19,9 +19,9 @@ class Airspace:
     numPoints: int
     color: str
     colorDict = {
-        'C' : '990000ff',
-        'D' : 'BEB222ff',
-        'G' : 'C0C0C0ff'
+        'C' : '800000ff',
+        'D' : 'ffB222ff',
+        'G' : 'ffC0C0C0'
     }
 
     def __init__(self, name, gps, top, bottom, clss):
@@ -80,9 +80,20 @@ class Airspace:
 
         return
 
+desc = "készítette: Baka Dávid\n\
+LHHH - Műegyetemi Sportrepülő Egyesület\n\
+https://github.com/bakadave/KMLcreator\n\
+david.baka@gmail.com"
+
 if __name__ == "__main__":
     kml = Kml(name="test")
-    kml.document = Folder(name="Hungary airspaces", open = 1)
+    kml.document = Folder(name="Hungary airspaces", open = 1, description=desc)
+
+    ctr = kml.newfolder(name="Budapest CTR")
+    BCTR = Airspace(airspaceName_1, splitCoordinates(line_1), altStr2Num(topAlt_1), altStr2Num(bottomAlt_1), clss_1)
+    BCTR.generatePoly(ctr)
+    print(BCTR.name + " polygon generated")
+
     tma = kml.newfolder(name="Budapest TMA")
 
     ENR2_1 = "C:/Users/bakad/OneDrive/Desktop/AIRAC/2020-06-18-AIRAC/html/eAIP/LH-ENR-2.1-en-HU.html"
@@ -106,4 +117,4 @@ if __name__ == "__main__":
         box.generatePoly(fld)
         print(box.name + " polygon generated")
 
-    kml.save("test.kml")
+    kml.savekmz("test.kmz")
